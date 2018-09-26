@@ -20,13 +20,19 @@ router.post('/',(req,res)=>{
     });
     user.save().then(result =>{
         console.log(result);
+        res.status(200).json({
+            message:'Doing POST to register users',
+            createdUser: user
+        });
     })
-    .catch(err=> console.log(err));
-
-    res.status(200).json({
-        message:'Doing POST to register users',
-        createdUser: user
+    .catch(err=> {
+        console.log(err);
+        res.status(500).json({
+            error:err
+        });
     });
+
+    
 });
 
 module.exports = router;
