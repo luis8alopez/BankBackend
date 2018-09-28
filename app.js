@@ -7,7 +7,7 @@ const session = require('express-session');
 
 
 const registerRoutes = require('./api/routes/register');
-const loginRoutes = require('./api/routes/login');
+const userRoutes = require('./api/routes/user');
 
 mongoose.connect('mongodb+srv://bank:bank@bank-db-qtwyy.mongodb.net/bank-db?retryWrites=true',{
     useNewUrlParser:true
@@ -31,7 +31,7 @@ app.use((req,res,next)=>{
 });
 //Rutas.
 app.use('/register',registerRoutes);
-app.use('/login',loginRoutes);
+app.use('/user',userRoutes);
 
 // Error Handler
 app.use((req,res,next)=>{
