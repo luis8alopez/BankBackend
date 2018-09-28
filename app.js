@@ -4,21 +4,18 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
-
-
 const registerRoutes = require('./api/routes/register');
 const userRoutes = require('./api/routes/user');
 
 mongoose.connect('mongodb+srv://bank:bank@bank-db-qtwyy.mongodb.net/bank-db?retryWrites=true',{
-    useNewUrlParser:true
-});
-
+    useNewUrlParser:true});
 
 //Middleware
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(session({secret:"interamericanbank",resave:false,saveUninitialized:true}));
+
 //CORS error HANDLER
 app.use((req,res,next)=>{
     res.header('Access-Control-Allow-Origin','*');
@@ -29,6 +26,7 @@ app.use((req,res,next)=>{
     }
     next();
 });
+
 //Rutas.
 app.use('/register',registerRoutes);
 app.use('/user',userRoutes);

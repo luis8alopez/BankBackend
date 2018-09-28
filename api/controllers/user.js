@@ -63,7 +63,7 @@ exports.user_transfer = (req,res,next)=>{
                 res.status(401).json({
                     message: 'Account not found'
                 });
-            }
+            }            
             var help2;
             help2=ansa.balance+req.body.ammount;
             User.update({'account':req.body.accountDestiny},{$set:{balance:help2 }})
