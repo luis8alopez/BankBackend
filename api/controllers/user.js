@@ -4,33 +4,55 @@ const Consignment = require('../models/consignment');
 const Transfer = require('../models/transfer');
 const Retire = require('../models/retire');
 const mongoose = require('mongoose');
+const Nexmo = require('nexmo');
+
+const Resultado = require('../routes/send');
+
+var resultado = Resultado;
+
+
+var nexmo = new Nexmo({apiKey: '8ce523c1', apiSecret: 'CFjNnHUv8dhBKDL0'});
 
 exports.user_sign_up = (req,res,next)=>{
 
-    User.findOne({'email': req.body.email, 'password':req.body.password},function(err,respo){
-        if(respo===null){
-            return res.status(404).json({
-                message: 'User does not exist'                
-            });
-        }        
-        console.log('Encontré exitosamente a: ');
-        console.log(respo);
-        req.session.user=respo;
-        const token = jwt.sign({    //Creación de token de duración 5 minutos
-            email: respo.email,
-            userId: respo.account
-        },"secret",
-        {
-            expiresIn: "5m"
+    nexmo.verify.check({request_id: req.body.resultId, code: req.body.code}, function(err,response){
+        if(response.status!='0'){   
+            return res.status(401).json({
+                message: 'Auth invalid',
+                error: err,
+                resultad: response
+            })
+        }else{
+            User.findOne({'email': req.body.email, 'password':req.body.password},function(err,respo){
+                if(respo===null){
+                    return res.status(404).json({
+                        message: 'User does not exist'                
+                    });
+                }  
+               
+                console.log('Encontré exitosamente a: ');
+                console.log(respo);
+                req.session.user=respo;
+                const token = jwt.sign({    //Creación de token de duración 5 minutos
+                    email: respo.email,
+                    userId: respo.account
+                },"secret",
+                {
+                    expiresIn: "5m"
+                }
+                );
+                res.status(200).json({
+                    message: 'Auth succesful',  
+                    returnedUser: respo,
+                    token: token      
+                });               
+            }).select('name account balance id email')
         }
-        );
-        res.status(200).json({
-            message: 'Auth succesful',  
-            returnedUser: respo,
-            token: token      
-        });
-        
-    }).select('name account balance id email')   
+        //console.log("Estoy entrando aquí");
+        console.log(response);
+    });
+
+       
 }
 
 exports.user_logged = (req,res)=>{
