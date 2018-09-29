@@ -6,11 +6,6 @@ const Retire = require('../models/retire');
 const mongoose = require('mongoose');
 const Nexmo = require('nexmo');
 
-const Resultado = require('../routes/send');
-
-var resultado = Resultado;
-
-
 var nexmo = new Nexmo({apiKey: '8ce523c1', apiSecret: 'CFjNnHUv8dhBKDL0'});
 
 exports.user_sign_up = (req,res,next)=>{
@@ -28,11 +23,11 @@ exports.user_sign_up = (req,res,next)=>{
                     return res.status(404).json({
                         message: 'User does not exist'                
                     });
-                }  
+                }
                
                 console.log('Encontré exitosamente a: ');
                 console.log(respo);
-                req.session.user=respo;
+                //req.session.user=respo;
                 const token = jwt.sign({    //Creación de token de duración 5 minutos
                     email: respo.email,
                     userId: respo.account
@@ -41,15 +36,18 @@ exports.user_sign_up = (req,res,next)=>{
                     expiresIn: "5m"
                 }
                 );
+                console.log('llego hasta aquí');
                 res.status(200).json({
                     message: 'Auth succesful',  
                     returnedUser: respo,
                     token: token      
-                });               
+                }) 
+                            
             }).select('name account balance id email')
+        
         }
         //console.log("Estoy entrando aquí");
-        console.log(response);
+        //console.log(response);
     });
 
        
